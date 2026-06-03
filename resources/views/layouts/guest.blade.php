@@ -1,30 +1,35 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
-
-        <title>{{ config('app.name', 'Laravel') }}</title>
-
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div>
-                <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-                </a>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ config('app.name', 'BalamGo') }} - Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body { background: #f0f4f8; min-height: 100vh; display: flex; align-items: center; justify-content: center; font-family: 'Segoe UI', sans-serif; }
+        .login-card { width: 100%; max-width: 420px; border-radius: 16px; border: 1px solid #dce3ea; box-shadow: 0 24px 56px rgba(16,31,52,.12); }
+        .login-header { background: #07549b; border-radius: 16px 16px 0 0; padding: 28px 32px 24px; color: #fff; }
+        .login-body { padding: 32px; }
+        .form-control:focus { border-color: #07549b; box-shadow: 0 0 0 3px rgba(7,84,155,.15); }
+        .btn-login { background: #07549b; border: 0; min-height: 46px; font-weight: 700; letter-spacing: .02em; }
+        .btn-login:hover { background: #06457e; }
+    </style>
+</head>
+<body>
+    <div class="login-card bg-white">
+        <div class="login-header">
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <i class="bi bi-geo-alt-fill fs-4"></i>
+                <span class="fw-bold fs-5">BalamGo</span>
             </div>
-
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
-                {{ $slot }}
-            </div>
+            <div class="opacity-75 small">WebGIS Wisata & Mitigasi Bandar Lampung</div>
         </div>
-    </body>
+        <div class="login-body">
+            {{ $slot }}
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>
