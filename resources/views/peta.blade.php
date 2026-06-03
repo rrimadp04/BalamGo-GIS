@@ -205,8 +205,9 @@ function renderAll() {
     const showWisata = document.getElementById('toggleWisata').checked && (activeMode === 'wisata' || activeMode === 'semua');
     const showMitigasi = document.getElementById('toggleMitigasi').checked && (activeMode === 'mitigasi' || activeMode === 'semua');
 
-    if (showWisata) renderMarkers(wisataRaw.filter(w => activeWisata.has(w.kategori)), 'wisata');
-    if (showMitigasi) renderMarkers(mitigasiRaw.filter(m => activeMitigasi.has(m.kategori)), 'mitigasi');
+    // Tampilkan semua marker, filter hanya berdasarkan kategori yang aktif (jika ada di set)
+    if (showWisata) renderMarkers(wisataRaw.filter(w => activeWisata.size === 0 || activeWisata.has(w.kategori)), 'wisata');
+    if (showMitigasi) renderMarkers(mitigasiRaw.filter(m => activeMitigasi.size === 0 || activeMitigasi.has(m.kategori)), 'mitigasi');
     renderNearby();
 }
 
@@ -311,18 +312,34 @@ document.querySelectorAll('.layer-tab').forEach(button => button.addEventListene
     renderAll();
 }));
 
-buildChecks('wisataChecks', WISATA_COLORS, activeWisata, 'wisata');
-buildChecks('mitigasiChecks', MITIGASI_COLORS, activeMitigasi, 'mitigasi');
-
 Promise.all([
     fetch('/api/wisata').then(r => r.json()),
     fetch('/api/mitigasi').then(r => r.json()),
 ]).then(([wisata, mitigasi]) => {
     wisataRaw = wisata;
     mitigasiRaw = mitigasi;
+
+    // Tambahkan kategori dari database yang belum ada di color map
+    wisataRaw.forEach(w => {
+        if (w.kategori && !WISATA_COLORS[w.kategori]) {
+            WISATA_COLORS[w.kategori] = '#16a34a';
+            WISATA_ICONS[w.kategori] = 'bi-geo-alt';
+        }
+        activeWisata.add(w.kategori);
+    });
+    mitigasiRaw.forEach(m => {
+        if (m.kategori && !MITIGASI_COLORS[m.kategori]) {
+            MITIGASI_COLORS[m.kategori] = '#dc2626';
+            MITIGASI_ICONS[m.kategori] = 'bi-shield-exclamation';
+        }
+        activeMitigasi.add(m.kategori);
+    });
+
+    buildChecks('wisataChecks', WISATA_COLORS, activeWisata, 'wisata');
+    buildChecks('mitigasiChecks', MITIGASI_COLORS, activeMitigasi, 'mitigasi');
     buildLegend('legendWisata', WISATA_COLORS, wisataRaw);
     buildLegend('legendMitigasi', MITIGASI_COLORS, mitigasiRaw);
     renderAll();
-});
+}).catch(err => console.error('Gagal memuat data peta:', err));
 </script>
 @endpush

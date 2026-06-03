@@ -97,15 +97,14 @@ class WisataController extends Controller
     // API: Return JSON untuk Leaflet
     public function apiIndex()
     {
-        return response()->json(Wisata::all());
+        return response()->json(
+            Wisata::select('id','nama_wisata','kategori','alamat','kecamatan','latitude','longitude','foto','harga_tiket','jam_operasional','kontak')->get()
+        );
     }
 
     public function showPublic(Wisata $wisata)
     {
-        $rekomendasi = Wisata::where('id', '!=', $wisata->id)
-            ->take(4)
-            ->get();
-
+        $rekomendasi = Wisata::where('id', '!=', $wisata->id)->take(4)->get();
         return view('detail-wisata', compact('wisata', 'rekomendasi'));
     }
 

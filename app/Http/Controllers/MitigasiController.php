@@ -63,13 +63,14 @@ class MitigasiController extends Controller
 
     public function apiIndex()
     {
-        return response()->json(Mitigasi::all());
+        return response()->json(
+            Mitigasi::select('id','nama_lokasi','kategori','alamat','kecamatan','latitude','longitude','kontak','status_aktif','kapasitas','jam_operasional')->get()
+        );
     }
 
     public function showPublic(Mitigasi $mitigasi)
     {
         $wisataTerdekat = \App\Models\Wisata::take(4)->get();
-
         return view('detail-mitigasi', compact('mitigasi', 'wisataTerdekat'));
     }
 

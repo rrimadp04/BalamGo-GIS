@@ -33,7 +33,7 @@
             <a href="{{ route('peta') }}" class="p-2 rounded mt-3">
                 <i class="bi bi-map me-2"></i>Lihat Peta
             </a>
-            <form action="/logout" method="POST" class="mt-3">
+            <form action="{{ route('logout') }}" method="POST" class="mt-3">
                 @csrf
                 <button type="submit" class="btn btn-outline-light btn-sm w-100">
                     <i class="bi bi-box-arrow-left me-1"></i>Logout
