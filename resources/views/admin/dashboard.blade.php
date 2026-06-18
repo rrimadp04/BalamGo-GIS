@@ -84,4 +84,44 @@
         </div>
     </div>
 </div>
+
+<div class="row g-4 mt-1">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header fw-bold"><i class="bi bi-exclamation-octagon text-danger"></i> Laporan Keadaan Darurat (Terbaru)</div>
+            <div class="card-body p-0">
+                <table class="table table-sm mb-0">
+                    <thead>
+                        <tr>
+                            <th>Waktu</th>
+                            <th>Jenis</th>
+                            <th>Nama</th>
+                            <th>No HP</th>
+                            <th>Lokasi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($latestEmergencyReports as $item)
+                            <tr>
+                                <td>{{ $item->created_at?->format('d/m/Y H:i') }}</td>
+                                <td><span class="badge bg-danger">{{ $item->jenis_kejadiaan }}</span></td>
+                                <td>{{ $item->nama ?: '-' }}</td>
+                                <td>{{ $item->no_hp ?: '-' }}</td>
+                                <td>
+                                    {{ $item->latitude }}, {{ $item->longitude }}
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">Belum ada laporan darurat.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
+

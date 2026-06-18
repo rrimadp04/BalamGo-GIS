@@ -1,36 +1,22 @@
 <?php
 
-namespace App\Console\Commands;
+namespace Database\Seeders;
 
-use Illuminate\Console\Command;
-use App\Models\Wisata;
 use App\Models\Mitigasi;
+use App\Models\Wisata;
+use Illuminate\Database\Seeder;
 
-class ImportGeoJSON extends Command
+class GeoJsonSeeder extends Seeder
 {
-    protected $signature   = 'import:geojson';
-    protected $description = 'Import GeoJSON wisata dan mitigasi ke database';
-
-    public function handle()
+    public function run(): void
     {
-        $this->importWisata();
-        $this->importMitigasi();
-
-        $this->info('Import selesai!');
+        $this->seedWisata();
+        $this->seedMitigasi();
     }
 
-    private function importWisata(): void
+    private function seedWisata(): void
     {
-        $this->info('Importing wisata...');
-        $path = storage_path('app/public/geojson/layer_wisata.geojson');
-
-        if (!file_exists($path)) {
-            $this->error("File tidak ditemukan: {$path}");
-            return;
-        }
-
-        $geojson = json_decode(file_get_contents($path), true);
-        $count = 0;
+        $geojson = $this->readGeoJson('layer_wisata.geojson');
         $names = [];
 
         foreach ($geojson['features'] ?? [] as $feature) {
@@ -63,36 +49,19 @@ class ImportGeoJSON extends Command
                     'latitude'        => $coords[1],
                 ]
             );
-            $count++;
         }
 
         if ($names !== []) {
             Wisata::whereNotIn('nama_wisata', $names)->delete();
         }
-
-        $this->info("Imported {$count} wisata records.");
     }
 
-    private function importMitigasi(): void
+    private function seedMitigasi(): void
     {
-        $this->info('Importing mitigasi...');
-        $files = [
-            'layer_rumah_sakit.geojson',
-            'layer_mitigasi_bencana.geojson',
-            'layer_titik_evakuasi.geojson',
-        ];
-        $count = 0;
         $names = [];
 
-        foreach ($files as $file) {
-            $path = storage_path("app/public/geojson/{$file}");
-
-            if (!file_exists($path)) {
-                $this->error("File tidak ditemukan: {$path}");
-                continue;
-            }
-
-            $geojson = json_decode(file_get_contents($path), true);
+        foreach (['layer_rumah_sakit.geojson', 'layer_mitigasi_bencana.geojson', 'layer_titik_evakuasi.geojson'] as $file) {
+            $geojson = $this->readGeoJson($file);
 
             foreach ($geojson['features'] ?? [] as $feature) {
                 $p = $feature['properties'] ?? [];
@@ -125,14 +94,22 @@ class ImportGeoJSON extends Command
                         'latitude'        => $coords[1],
                     ]
                 );
-                $count++;
             }
         }
 
         if ($names !== []) {
             Mitigasi::whereNotIn('nama_lokasi', $names)->delete();
         }
+    }
 
-        $this->info("Imported {$count} mitigasi records.");
+    private function readGeoJson(string $file): array
+    {
+        $path = storage_path("app/public/geojson/{$file}");
+
+        if (!file_exists($path)) {
+            return [];
+        }
+
+        return json_decode(file_get_contents($path), true) ?: [];
     }
 }

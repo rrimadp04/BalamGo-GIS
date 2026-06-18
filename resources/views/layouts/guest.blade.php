@@ -15,14 +15,14 @@
         .form-control:focus { border-color: #07549b; box-shadow: 0 0 0 3px rgba(7,84,155,.15); }
         .btn-login { background: #07549b; border: 0; min-height: 46px; font-weight: 700; letter-spacing: .02em; }
         .btn-login:hover { background: #06457e; }
+        .login-logo { width: auto; height: 64px; max-width: 230px; object-fit: contain; border-radius: 6px; }
     </style>
 </head>
 <body>
     <div class="login-card bg-white">
         <div class="login-header">
             <div class="d-flex align-items-center gap-2 mb-1">
-                <i class="bi bi-geo-alt-fill fs-4"></i>
-                <span class="fw-bold fs-5">BalamGo</span>
+                <img src="{{ asset('Logo Balamgo.jpeg') }}" alt="BalamGo" class="login-logo">
             </div>
             <div class="opacity-75 small">WebGIS Wisata & Mitigasi Bandar Lampung</div>
         </div>

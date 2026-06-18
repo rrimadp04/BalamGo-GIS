@@ -11,6 +11,7 @@
         .sidebar a { color: rgba(255,255,255,.8); text-decoration: none; }
         .sidebar a:hover, .sidebar a.active { color: #fff; background: rgba(255,255,255,.15); }
         .main-content { flex: 1; background: #F8F9FA; min-height: 100vh; }
+        .admin-logo { width: auto; height: 62px; max-width: 210px; object-fit: contain; border-radius: 6px; }
     </style>
     @stack('styles')
 </head>
@@ -18,7 +19,7 @@
 <div class="d-flex">
     <div class="sidebar p-3">
         <div class="text-white fw-bold fs-5 mb-4 pb-2 border-bottom border-secondary">
-            <i class="bi bi-geo-alt-fill"></i> BalamGo Admin
+            <img src="{{ asset('Logo Balamgo.jpeg') }}" alt="BalamGo Admin" class="admin-logo">
         </div>
         <nav class="d-flex flex-column gap-1">
             <a href="{{ route('admin.dashboard') }}" class="p-2 rounded">

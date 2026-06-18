@@ -51,6 +51,10 @@
         'https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=900&q=80',
         'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80',
     ];
+    $ticket = trim((string) $wisata->harga_tiket);
+    $ticketLabel = $ticket
+        ? (preg_match('/^(gratis|free|rp\b)/i', $ticket) ? $ticket : 'Rp '.$ticket)
+        : 'Cek lokasi';
 @endphp
 <section class="detail-hero">
     <div class="container hero-inner">
@@ -66,7 +70,7 @@
 <section class="fact-row">
     <div class="container">
         <div class="row g-3">
-            <div class="col-6 col-lg-3"><div class="fact-card"><i class="bi bi-cash-stack"></i><div class="fact-label">Entrance Fee</div><div class="fact-value">{{ $wisata->harga_tiket ? 'Rp '.$wisata->harga_tiket : 'Cek lokasi' }}</div></div></div>
+            <div class="col-6 col-lg-3"><div class="fact-card"><i class="bi bi-cash-stack"></i><div class="fact-label">Entrance Fee</div><div class="fact-value">{{ $ticketLabel }}</div></div></div>
             <div class="col-6 col-lg-3"><div class="fact-card"><i class="bi bi-clock"></i><div class="fact-label">Open Hours</div><div class="fact-value">{{ $wisata->jam_operasional ?: 'Lihat detail' }}</div></div></div>
             <div class="col-6 col-lg-3"><div class="fact-card"><i class="bi bi-telephone"></i><div class="fact-label">Contact</div><div class="fact-value">{{ $wisata->kontak ?: 'Tersedia' }}</div></div></div>
             <div class="col-6 col-lg-3"><div class="fact-card"><i class="bi bi-map"></i><div class="fact-label">Category</div><div class="fact-value">{{ $wisata->kategori }}</div></div></div>
@@ -130,7 +134,13 @@
                             <div class="body">
                                 <div class="text-primary small fw-bold">{{ $item->kategori }}</div>
                                 <h3 class="h5 fw-bold text-dark mt-1">{{ $item->nama_wisata }}</h3>
-                                <div class="d-flex justify-content-between align-items-center"><span class="text-muted"><i class="bi bi-star-fill text-success"></i> 4.{{ 5 + $index }}</span><span class="price">{{ $item->harga_tiket ? 'Rp '.$item->harga_tiket : 'Open' }}</span></div>
+                                @php
+                                    $itemTicket = trim((string) $item->harga_tiket);
+                                    $itemTicketLabel = $itemTicket
+                                        ? (preg_match('/^(gratis|free|rp\b)/i', $itemTicket) ? $itemTicket : 'Rp '.$itemTicket)
+                                        : 'Open';
+                                @endphp
+                                <div class="d-flex justify-content-between align-items-center"><span class="text-muted"><i class="bi bi-star-fill text-success"></i> 4.{{ 5 + $index }}</span><span class="price">{{ $itemTicketLabel }}</span></div>
                             </div>
                         </article>
                     </a>

@@ -15,9 +15,100 @@
     }
 
     body {
-        background: #fff;
+        background: radial-gradient(1200px 500px at 10% 0%, rgba(15,118,189,.10), transparent 60%),
+                    radial-gradient(900px 420px at 90% 10%, rgba(85,239,196,.10), transparent 55%),
+                    #ffffff;
         color: var(--balam-ink);
     }
+
+
+    /* ========== Animations (performance-friendly) ========== */
+    .reveal {
+        opacity: 0;
+        transform: translateY(14px);
+        will-change: opacity, transform;
+    }
+
+    .reveal.in {
+        opacity: 1;
+        transform: translateY(0);
+        transition: opacity .75s cubic-bezier(.2,.8,.2,1),
+                    transform .75s cubic-bezier(.2,.8,.2,1);
+    }
+
+    .reveal-soft {
+        opacity: 0;
+        transform: translateY(10px) scale(.99);
+        will-change: opacity, transform;
+    }
+
+    .reveal-soft.in {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        transition: opacity .8s cubic-bezier(.2,.8,.2,1),
+                    transform .8s cubic-bezier(.2,.8,.2,1);
+    }
+
+    .shine {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .shine::after {
+        content: "";
+        position: absolute;
+        top: -60%;
+        left: -30%;
+        width: 60%;
+        height: 220%;
+        background: linear-gradient(
+            120deg,
+            rgba(255,255,255,0) 0%,
+            rgba(255,255,255,.35) 40%,
+            rgba(255,255,255,0) 75%
+        );
+        transform: translateX(-120%) rotate(10deg);
+        transition: transform .6s ease;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .shine:hover::after {
+        transform: translateX(240%) rotate(10deg);
+    }
+
+    .ring-glow {
+        position: relative;
+    }
+
+    .ring-glow::before {
+        content: "";
+        position: absolute;
+        inset: -2px;
+        border-radius: inherit;
+        background: radial-gradient(circle at 30% 20%, rgba(85,239,196,.35), rgba(7,84,155,0) 50%);
+        opacity: .65;
+        filter: blur(14px);
+        z-index: -1;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .reveal,
+        .reveal-soft {
+            opacity: 1 !important;
+            transform: none !important;
+            transition: none !important;
+        }
+
+        .shine::after {
+            display: none;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .reveal, .reveal-soft { transform: none; }
+    }
+
 
     .navbar {
         position: sticky;
@@ -74,7 +165,7 @@
         overflow: hidden;
         background:
             linear-gradient(90deg, rgba(7, 52, 96, .92) 0%, rgba(7, 82, 145, .74) 42%, rgba(7, 82, 145, .35) 72%, rgba(7, 82, 145, .12) 100%),
-            url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1800&q=80') center/cover;
+            url('{{ asset('Baground_Home.jpg') }}') center/cover;
     }
 
     .landing-hero::after {
@@ -437,20 +528,21 @@
     <section class="landing-hero">
         <div class="container">
             <div class="hero-content">
-                <div class="hero-kicker">
+                <div class="hero-kicker reveal-soft" data-anim="reveal" data-anim-delay="0">
+
                     <i class="bi bi-shield-check"></i>
                     Wisata dan mitigasi dalam satu peta
                 </div>
-                <h1 class="hero-title">Jelajahi Bandar Lampung dengan lebih aman</h1>
-                <p class="hero-copy">
+                <h1 class="hero-title reveal" data-anim="reveal">Jelajahi Bandar Lampung dengan lebih aman</h1>
+                <p class="hero-copy reveal-soft" data-anim="reveal" data-anim-delay="80">
                     Temukan destinasi wisata, fasilitas mitigasi, dan titik penting kota dalam pengalaman navigasi yang ringkas, visual, dan siap dipakai.
                 </p>
-                <div class="hero-actions">
-                    <a href="{{ route('peta') }}" class="btn-balam">
+                <div class="hero-actions reveal" data-anim="reveal" data-anim-stagger="true">
+                    <a href="{{ route('peta') }}" class="btn-balam shine reveal-soft" data-anim="reveal" data-anim-delay="0">
                         <i class="bi bi-map"></i>
                         Buka Peta
                     </a>
-                    <a href="#destinasi" class="btn-balam-outline">
+                    <a href="#destinasi" class="btn-balam-outline shine reveal-soft" data-anim="reveal" data-anim-delay="80">
                         <i class="bi bi-compass"></i>
                         Lihat Destinasi
                     </a>
@@ -462,8 +554,10 @@
     <section class="stats-wrap">
         <div class="container">
             <div class="row g-3 g-lg-4">
-                <div class="col-6 col-lg-3">
-                    <div class="stat-card">
+                <div class="col-6 col-lg-3 reveal" data-anim="reveal" data-anim-delay="0">
+                    <div class="stat-card ring-glow">
+
+
                         <span class="icon-box" style="background:#d8fff0;color:#078660"><i class="bi bi-signpost-split"></i></span>
                         <div class="stat-value">{{ number_format($totalWisata ?? 0) }}+</div>
                         <div class="stat-label">Total Wisata</div>
@@ -515,9 +609,26 @@
                             'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80',
                             'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=900&q=80',
                         ];
-                        $imageUrl = $wisata->foto ? Storage::url($wisata->foto) : $fallbackImages[$index % count($fallbackImages)];
-                        $price = $wisata->harga_tiket ? 'Rp ' . $wisata->harga_tiket : 'Cek lokasi';
-                        $rating = number_format(4.5 + (($index % 4) * 0.1), 1);
+                        $featuredImages = [
+                            'Bukit Sakura' => 'https://cdn-strapi.prod.99iddev.net/assets/bukit_sakura_kemiling_50a6951a7f.jpg',
+                            'Taman Kupu-Kupu Gita Persada' => 'https://cdn-strapi.prod.99iddev.net/assets/gita_persada_butterfly_park_708ebd6831.jpg',
+                            'Pantai Duta Wisata' => 'https://asset.kompas.com/crops/ZI6DLDxlFmg67GRal-FMPdUt6sw=/0x0:700x350/1200x800/data/photo/2020/08/12/5f3358b900936.jpg',
+                            'Puncak Mas' => 'https://cdn-strapi.prod.99iddev.net/assets/puncak_mas_lampung_71e595e5c7.jpg',
+                        ];
+                        $featuredMeta = [
+                            'Bukit Sakura' => ['category' => 'Wisata Alam', 'rating' => '4.5', 'location' => 'Langkapura', 'price' => 'Rp 10.000-20.000'],
+                            'Taman Kupu-Kupu Gita Persada' => ['category' => 'Wisata Edukasi', 'rating' => '4.6', 'location' => 'Langkapura', 'price' => 'Rp 10.000'],
+                            'Pantai Duta Wisata' => ['category' => 'Wisata Bahari', 'rating' => '4.7', 'location' => 'Bumi Waras', 'price' => 'Rp 10.000'],
+                            'Puncak Mas' => ['category' => 'Wisata Alam', 'rating' => '4.8', 'location' => 'Tanjung Karang Barat', 'price' => 'Rp 20.000'],
+                        ];
+                        $imageUrl = $featuredImages[$wisata->nama_wisata] ?? ($wisata->foto ? Storage::url($wisata->foto) : $fallbackImages[$index % count($fallbackImages)]);
+                        $ticket = trim((string) $wisata->harga_tiket);
+                        $price = $ticket
+                            ? (preg_match('/^(gratis|free|rp\b)/i', $ticket) ? $ticket : 'Rp ' . $ticket)
+                            : 'Cek lokasi';
+                        $meta = $featuredMeta[$wisata->nama_wisata] ?? null;
+                        $price = $meta['price'] ?? $price;
+                        $rating = $meta['rating'] ?? number_format(4.5 + (($index % 4) * 0.1), 1);
                     @endphp
                     <div class="col-md-6 col-xl-3">
                         <article class="destination-card">
@@ -526,17 +637,17 @@
                             </div>
                             <div class="p-3">
                                 <div class="d-flex align-items-center justify-content-between gap-2">
-                                    <span class="badge-soft">{{ $wisata->kategori ?? 'Wisata' }}</span>
+                                    <span class="badge-soft">{{ $meta['category'] ?? ($wisata->kategori ?? 'Wisata') }}</span>
                                     <span class="rating"><i class="bi bi-star-fill"></i> {{ $rating }}</span>
                                 </div>
                                 <h2 class="destination-title h6">{{ $wisata->nama_wisata }}</h2>
                                 <div class="destination-meta">
                                     <i class="bi bi-geo-alt"></i>
-                                    {{ $wisata->kecamatan ?? $wisata->kelurahan ?? 'Bandar Lampung' }}
+                                    {{ $meta['location'] ?? ($wisata->kecamatan ?? $wisata->kelurahan ?? 'Bandar Lampung') }}
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between gap-3 mt-3">
                                     <span class="price">{{ $price }}</span>
-                                    <a href="{{ route('peta') }}" class="btn btn-sm btn-primary rounded-2 px-3">Detail</a>
+                                    <a href="{{ route('wisata.show', $wisata) }}" class="btn btn-sm btn-primary rounded-2 px-3">Detail</a>
                                 </div>
                             </div>
                         </article>
@@ -572,6 +683,8 @@
             </div>
         </div>
     </section>
+
+    @include('partials.home-anim-scripts')
 
     <section class="feature-band" id="about">
         <div class="container text-center">

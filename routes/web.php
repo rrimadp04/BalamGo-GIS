@@ -5,7 +5,9 @@ use App\Http\Controllers\MitigasiController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\EmergencyReportController;
 use Illuminate\Support\Facades\Route;
+
 
 // Halaman publik
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -13,6 +15,10 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/peta', function () {
     return view('peta');
 })->name('peta');
+
+Route::get('/gallery', function () {
+    return view('gallery');
+})->name('gallery');
 
 Route::get('/about', function () {
     return view('about');
@@ -26,6 +32,12 @@ Route::get('/api/wisata/search',   [WisataController::class,   'search']);
 Route::get('/api/mitigasi/search', [MitigasiController::class, 'search']);
 Route::get('/api/wisata',          [WisataController::class,   'apiIndex'])->name('api.wisata');
 Route::get('/api/mitigasi',        [MitigasiController::class, 'apiIndex'])->name('api.mitigasi');
+
+// Emergency reports (guest)
+Route::post('/emergency-reports', [EmergencyReportController::class, 'store']);
+Route::get('/api/emergency/captcha', [EmergencyReportController::class, 'captcha']);
+Route::get('/api/emergency/nearby', [EmergencyReportController::class, 'nearby']);
+
 
 // Route Admin (dilindungi auth)
 Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {

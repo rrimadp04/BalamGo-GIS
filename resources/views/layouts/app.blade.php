@@ -13,7 +13,22 @@
     <style>
         :root { --primary: #07549b; --accent: #27AE60; }
         body { font-family: 'Segoe UI', sans-serif; }
-        .navbar-brand { font-weight: 800; color: var(--primary) !important; }
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            height: 40px;
+            overflow: visible;
+            padding-top: 0;
+            padding-bottom: 0;
+            font-weight: 800;
+            color: var(--primary) !important;
+        }
+        .navbar-logo {
+            width: auto;
+            height: 38px;
+            max-width: 180px;
+            object-fit: contain;
+        }
         .navbar {
             border-bottom: 1px solid rgba(15, 35, 56, .08);
         }
@@ -71,7 +86,9 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-white">
         <div class="container-fluid px-4">
-            <a class="navbar-brand" href="{{ route('home') }}">BalamGo</a>
+            <a class="navbar-brand" href="{{ route('home') }}" aria-label="BalamGo">
+                <img src="{{ asset('Logo Balamgo.jpeg') }}" alt="BalamGo" class="navbar-logo">
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -82,6 +99,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('peta') ? 'active' : '' }}" href="{{ route('peta') }}">Interactive Map</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('gallery') ? 'active' : '' }}" href="{{ route('gallery') }}">Gallery</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}" href="{{ route('about') }}">About</a>
@@ -96,8 +116,6 @@
                             @csrf
                             <button type="submit" class="nav-link btn btn-link ms-lg-2">Logout</button>
                         </form>
-                    @else
-                        <a class="admin-pill" href="{{ route('login') }}">Admin Login</a>
                     @endauth
                 </div>
             </div>

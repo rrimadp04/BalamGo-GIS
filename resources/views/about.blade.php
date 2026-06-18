@@ -27,7 +27,7 @@
         text-align: center;
         background:
             linear-gradient(180deg, rgba(255,255,255,.32) 0%, rgba(255,255,255,.64) 54%, rgba(255,255,255,.94) 100%),
-            url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1900&q=80') center/cover;
+            url('{{ asset('Baground_About.jpg') }}') center/cover;
     }
 
     .about-hero::after {
